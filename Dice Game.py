@@ -98,8 +98,7 @@ class Game(simpleGE.Scene):
             self.compScore = random.randint(1,6)
             print(self.compScore)
             self.totalComp += self.compScore
-        print(self.totalComp)
-        
+        print(f"Comp Score: {self.totalComp}")
         for i in range(4):
             newDie = Die(self)
             newDie.setPosition((80 + (i * 160), 120))
@@ -114,8 +113,6 @@ class Game(simpleGE.Scene):
         self.sprites = [self.dice, self.rollAgainDice, self.btnRoll, self.btnHigher, self.btnFold,self.score]
         self.sprites.remove(self.rollAgainDice)
     def update(self):
-        
-        
         if self.btnRoll.clicked:
             self.tries += 1
             self.btnRoll.hide()
@@ -129,9 +126,14 @@ class Game(simpleGE.Scene):
             self.btnHigher.hide()
             for die in self.dice:
                 self.score.text = (f"Total Score: {self.totalValue}")
-            if self.totalValue <= 21:
-                print("You win!")
-            elif self.totalValue > 21:
+            self.totalValue = 21 - self.totalValue
+            self.totalComp = 21 - self.totalComp
+            if self.totalValue >= 0:
+                if self.totalValue < self.totalComp:
+                    print("You win!")
+                elif self.totalValue > 21:
+                    print("You bust!")
+            else:
                 print("You bust!")
         if self.btnHigher.clicked:
             self.rollAgain.setPosition((320,250))
@@ -146,6 +148,7 @@ class Game(simpleGE.Scene):
                         #self.rollAgainDice.append(rollAgain)
                     for die in self.rollAgainDice:
                         die.roll()
+                        self.rollAgainDice.clear()
                         print(f"Total: {self.totalValue}")
                         print(die.value)
                         self.rollAgainValue += die.value
@@ -153,8 +156,14 @@ class Game(simpleGE.Scene):
                         self.score.text = (f"Total Score: {self.totalValue}")
             else:
                 print("Max tries reached!") 
+            if self.totalValue == 21:
+                print("You win!")
+                self.btnHigher.hide()
+                self.btnFold.hide()
             if self.totalValue >= 22:
                 print("You bust!")
+                self.btnHigher.hide()
+                self.btnFold.hide()
             if self.rollAgainValue >= 22:
                 print("You bust!")
 def main():
