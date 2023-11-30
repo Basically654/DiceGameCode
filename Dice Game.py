@@ -89,22 +89,33 @@ class Game(simpleGE.Scene):
         self.tries = 0
         self.totalValue = 0
         self.rollAgainValue = 0 
+        self.compScore = 0
+        self.totalComp = 0
         self.rollAgainDice = []
         self.rollAgain = Die(self)
+        
+        for i in range(4):
+            self.compScore = random.randint(1,6)
+            print(self.compScore)
+            self.totalComp += self.compScore
+        print(self.totalComp)
         
         for i in range(4):
             newDie = Die(self)
             newDie.setPosition((80 + (i * 160), 120))
             self.dice.append(newDie)
-            
-        """
+        
+
         for i in range(1):
             rollAgain = Die(self)
             rollAgain.setPosition((320 + (i * 100), 250))
             self.rollAgainDice.append(rollAgain)
-        """
+        
         self.sprites = [self.dice, self.rollAgainDice, self.btnRoll, self.btnHigher, self.btnFold,self.score]
+        self.sprites.remove(self.rollAgainDice)
     def update(self):
+        
+        
         if self.btnRoll.clicked:
             self.tries += 1
             self.btnRoll.hide()
@@ -118,20 +129,21 @@ class Game(simpleGE.Scene):
             self.btnHigher.hide()
             for die in self.dice:
                 self.score.text = (f"Total Score: {self.totalValue}")
-            if self.totalValue == 21:
+            if self.totalValue <= 21:
                 print("You win!")
-            else:
-                print("You lose!")
+            elif self.totalValue > 21:
+                print("You bust!")
         if self.btnHigher.clicked:
             self.rollAgain.setPosition((320,250))
             self.tries += 1
             if len(self.dice) >= 5:
                 self.sprites.remove(self.dice)
                 self.sprites.append(self.rollAgainDice)
+                
             if self.tries <= 3:  
                     for i in range(1):
                         rollAgain = Die(self)
-                        self.rollAgainDice.append(rollAgain)
+                        #self.rollAgainDice.append(rollAgain)
                     for die in self.rollAgainDice:
                         die.roll()
                         print(f"Total: {self.totalValue}")
@@ -140,7 +152,11 @@ class Game(simpleGE.Scene):
                         self.totalValue += self.rollAgainValue
                         self.score.text = (f"Total Score: {self.totalValue}")
             else:
-                print("Max tries reached!")      
+                print("Max tries reached!") 
+            if self.totalValue >= 22:
+                print("You bust!")
+            if self.rollAgainValue >= 22:
+                print("You bust!")
 def main():
     game = Game()
     game.start()
