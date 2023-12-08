@@ -1,6 +1,6 @@
-#DiceGameCode
-Created dice blackjack where player must roll dice to get as close to but not exceeding 21
-Playing against a computer bot with no AI skills just random chance
+# DiceGameCode
+# Created dice blackjack where player must roll dice to get as close to but not exceeding 21
+# Playing against a computer bot with no AI skills just random chance
 dice image original: https://opengameart.org/content/dice-4
 game background: https://wallpaper.mob.org/gallery/tag=tavern/
 game background music: https://opengameart.org/content/woodland-fantasy
