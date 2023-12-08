@@ -18,7 +18,7 @@ class Die(simpleGE.SuperSprite):
         self.setImage("1_dot.png")
         self.setSize(60,60)
         
-        self.images = [None,
+        self.images = [pygame.image.load("blank.png"),
                        pygame.image.load("1_dot.png"),                      
                        pygame.image.load("2_dots.png"),
                        pygame.image.load("3_dots.png"),
@@ -107,15 +107,6 @@ class Game(simpleGE.Scene):
         super().__init__()
         
         pygame.init()
-        
-        self.images = [None,
-                       pygame.image.load("1_dot.png"),                      
-                       pygame.image.load("2_dots.png"),
-                       pygame.image.load("3_dots.png"),
-                       pygame.image.load("4_dots.png"),
-                       pygame.image.load("5_dots.png"),
-                       pygame.image.load("6_dots.png"),                      
-                       ]
          
         # Initializing surface
         surface = pygame.display.set_mode((640, 480))
@@ -130,7 +121,6 @@ class Game(simpleGE.Scene):
         
         #dice roll sound effect
         self.sndRoll = simpleGE.Sound("diceRoll.ogg")
-        self.sndApplause = simpleGE.Sound("applause.ogg")
         
         pygame.mixer.music.load("tavern_music.ogg")
         pygame.mixer.music.set_volume(.1)
@@ -154,7 +144,7 @@ class Game(simpleGE.Scene):
         self.compScore = 0
         self.totalComp = 0
         self.rollAgainDice = []
-        self.rollAgain = ExtraDie(self)
+        self.thirdDice = []
         
         for i in range(4):
             self.compScore = random.randint(1,6)
@@ -166,27 +156,28 @@ class Game(simpleGE.Scene):
             newDie = Die(self)
             newDie.setPosition((80 + (i * 160), 120))
             self.dice.append(newDie)
-        """
+        
         for i in range(1):
             newDie = ExtraDie(self)
             newDie.setPosition((157 + (i *160), 220))
-            self.dice.append(newDie)
-        """   
-        self.sprites = [self.dice, self.btnRoll, self.btnHigher, self.btnFold,
+            self.rollAgainDice.append(newDie)
+        
+        for i in range(1):
+            newDie = ExtraDie(self)
+            newDie.setPosition((320, 220))
+            self.thirdDice.append(newDie)
+        
+        self.sprites = [self.dice, self.thirdDice, self.rollAgainDice, self.btnRoll, self.btnHigher, self.btnFold,
                         self.score,self.compLabel,self.winnerLabel]
         self.winnerLabel.hide()
         #self.sprites.remove(self.rollAgainDice)
     
     def update(self):
-        soundEffect = 1
         self.compLabel.text = (f"Comp Score: {self.totalComp}")
         differenceValue = 21 - self.totalValue
         differenceComp = 21 - self.totalComp
         
         if self.totalValue == 21:
-            if soundEffect == 1:
-                self.sndApplause.play()
-                soundEffect -= 1
             self.winnerLabel.show((320,40))
             self.winnerLabel.text = ("You win!")
             self.score.bgColor = (34,139,34)
@@ -209,10 +200,8 @@ class Game(simpleGE.Scene):
             self.btnRoll.hide()
             self.btnHigher.hide()
             self.btnFold.hide()
+            
         if self.totalComp >= 22:
-            if soundEffect == 1:
-                self.sndApplause.play()
-                soundEffect -= 1
             self.winnerLabel.show((320,40))
             self.winnerLabel.text = ("You win!")
             self.score.bgColor = (34,139,34)
@@ -250,15 +239,12 @@ class Game(simpleGE.Scene):
                 if differenceValue >= 0:
                     if differenceValue > differenceComp:
                         self.winnerLabel.show((320,40))
-                        self.winnerLabel.text = ("You lose!13")
+                        self.winnerLabel.text = ("You lose!")
                         self.score.bgColor = (34,139,34)
                         self.compLabel.bgColor = (255,0,0)
                     if self.totalValue < self.totalComp:
-                        if soundEffect == 1:
-                            self.sndApplause.play()
-                            soundEffect -= 1
                         self.winnerLabel.show((320,40))
-                        self.winnerLabel.text = ("You win!12")
+                        self.winnerLabel.text = ("You win!")
                         self.score.bgColor = (34,139,34)
                         self.compLabel.bgColor = (255,0,0)
                         self.btnHigher.hide()
@@ -272,7 +258,7 @@ class Game(simpleGE.Scene):
                     self.btnFold.hide()
             else:
                 self.winnerLabel.show((320,40))
-                self.winnerLabel.text = ("You lose!1")
+                self.winnerLabel.text = ("You lose!")
                 self.compLabel.bgColor = (34,139,34)
                 self.score.bgColor = (255,0,0)
             if differenceComp >= 0:
@@ -283,11 +269,8 @@ class Game(simpleGE.Scene):
                     self.compLabel.bgColor = (255,0,0)
                     self.btnFold.hide()
             else:
-                if soundEffect == 1:
-                    self.sndApplause.play()
-                    soundEffect -= 1
                 self.winnerLabel.show((320,40))
-                self.winnerLabel.text = ("You win!0")
+                self.winnerLabel.text = ("You win!")
                 self.score.bgColor = (34,139,34)
                 self.compLabel.bgColor = (255,0,0)
                 self.btnRoll.hide()
@@ -301,21 +284,18 @@ class Game(simpleGE.Scene):
                     print(differenceValue)
                     print(differenceComp)
                     if differenceValue < differenceComp:
-                        if soundEffect == 1:
-                            self.sndApplause.play()
-                            soundEffect -= 1
                         self.winnerLabel.show((320,40))
                         self.winnerLabel.text = ("You win!")
                         self.score.bgColor = (34,139,34)
                         self.compLabel.bgColor = (255,0,0)
                     if differenceValue > differenceComp:
                         self.winnerLabel.show((320,40))
-                        self.winnerLabel.text = ("You lost!")
+                        self.winnerLabel.text = ("You lose!")
                         self.compLabel.bgColor = (34,139,34)
                         self.score.bgColor = (255,0,0)
             else:
                 self.winnerLabel.show((320,40))
-                self.winnerLabel.text = ("You bust!10")  
+                self.winnerLabel.text = ("You bust!")  
         
             
         if self.btnHigher.clicked:
@@ -335,20 +315,18 @@ class Game(simpleGE.Scene):
                 self.tries += 1
                 if len(self.dice) >= 5:
                     self.sprites.remove(self.dice)     
-                if self.tries <= 3: 
-                        for i in range(1):
-                            newDie = ExtraDie(self)
-                            newDie.setPosition((157 + (i *160), 220))
-                            self.dice.append(newDie)
+                if self.tries <= 3:
+                    if self.tries <= 2:
                         for die in self.rollAgainDice:
+                            self.sndRoll.play()
                             die.roll()
-                            self.rollAgainDice.clear()
                             print(len(self.rollAgainDice))
                             print(f"Total: {self.totalValue}")
                             self.rollAgainValue += die.value
                             print(self.rollAgainValue)
                             self.totalValue += self.rollAgainValue
                             self.score.text = (f"Total Score: {self.totalValue}")
+                            self.rollAgainValue = 0
                         if self.totalValue > 21:
                             self.winnerLabel.show((320,40))
                             self.winnerLabel.text = ("You bust!")
@@ -362,6 +340,17 @@ class Game(simpleGE.Scene):
                                 self.totalComp += self.compScore
                                 print(f"Comp Score: {self.totalComp}")
                                 self.compTries += 1
+                    if self.tries == 3:
+                        for die in self.thirdDice:
+                            self.sndRoll.play()
+                            die.roll()
+                            print(len(self.thirdDice))
+                            print(f"Total: {self.totalValue}")
+                            self.rollAgainValue += die.value
+                            print(self.rollAgainValue)
+                            self.totalValue += self.rollAgainValue
+                            self.score.text = (f"Total Score: {self.totalValue}")
+                            self.rollAgainValue = 0                                
                 else:
                     print("Max tries reached!")
                     differenceValue = 21 - self.totalValue
@@ -381,9 +370,6 @@ class Game(simpleGE.Scene):
                         self.btnHigher.hide()
                         self.btnFold.hide()
                     if differenceComp > differenceValue:
-                        if soundEffect == 1:
-                            self.sndApplause.play()
-                            soundEffect -= 1
                         self.winnerLabel.show((320,40))
                         self.winnerLabel.text = ("You win!")
                         self.score.bgColor = (34,139,34)
@@ -391,11 +377,8 @@ class Game(simpleGE.Scene):
                         self.btnHigher.hide()
                         self.btnFold.hide()
                     if self.totalValue == 21:
-                        if soundEffect == 1:
-                            self.sndApplause.play()
-                            soundEffect -= 1
                         self.winnerLabel.show((320,40))
-                        self.winnerLabel.text = ("You win!4")
+                        self.winnerLabel.text = ("You win!")
                         self.score.bgColor = (34,139,34)
                         self.compLabel.bgColor = (255,0,0)
                         self.btnHigher.hide()
